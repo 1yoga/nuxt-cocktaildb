@@ -1,5 +1,13 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true }
-})
+  modules: ['@pinia/nuxt'],
+
+  css: ['@/assets/styles/main.scss'],
+
+  runtimeConfig: {
+    public: {
+      apiUrl: 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s='
+    }
+  },
+
+  compatibilityDate: '2025-02-27'
+});
