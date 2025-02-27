@@ -3,29 +3,25 @@ import type { CocktailResponse } from '@/types/cocktail';
 
 export const useCocktailsStore = defineStore('cocktails', {
   state: () => ({
-    cocktails: {} as Record<string, CocktailResponse['drinks']>
+    cocktails: {} as Record<string, CocktailResponse['drinks']>,
+    error: {} as Record<string, string>,
   }),
   actions: {
     async fetchCocktails(code: string) {
-      if (this.cocktails[code]) return;
+      if (this.cocktails[code] || this.error[code]) return;
 
       try {
-        const { public: config } = useRuntimeConfig();
-        const response = await $fetch<CocktailResponse>(`${config.apiUrl}${code}`);
+        const response = await $fetch<CocktailResponse>(
+          `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${code}`
+        );
 
-        if (response.drinks) {
-          this.cocktails[code] = response.drinks.map((drink) => ({
-            idDrink: drink.idDrink,
-            strDrink: drink.strDrink,
-            strCategory: drink.strCategory,
-            strAlcoholic: drink.strAlcoholic,
-            strGlass: drink.strGlass,
-            strInstructions: drink.strInstructions,
-            strDrinkThumb: drink.strDrinkThumb
-          }));
+        if (response?.drinks) {
+          this.cocktails[code] = response.drinks;
+        } else {
+          this.error[code] = "404"; // Если API вернул `null`, это 404
         }
-      } catch (error) {
-        console.error(`Ошибка загрузки ${code}:`, error);
+      } catch (err) {
+        this.error[code] = 'Failed to load data. Please try again later.';
       }
     }
   }

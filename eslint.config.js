@@ -5,7 +5,7 @@ import vueParser from 'vue-eslint-parser';
 
 export default [
   {
-    ignores: ['node_modules', 'dist', '.nuxt'] // Игнорируем ненужные файлы
+    ignores: ['node_modules', 'dist', '.nuxt']
   },
   {
     files: ['**/*.{ts,vue}'],
